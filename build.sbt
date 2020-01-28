@@ -6,10 +6,10 @@ version := "3.0.1"
 
 scalaVersion := "2.11.7"
 
-resolvers := ("Atlassian Releases" at "https://maven.atlassian.com/public/") +: resolvers.value
-
+//resolvers := ("Atlassian Releases" at "https://maven.atlassian.com/public/") +: resolvers.value
+resolvers += "Atlassian Releases" at "https://maven.atlassian.com/public/"
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
-
+resolvers += Resolver.jcenterRepo
 resolvers += Resolver.sonatypeRepo("snapshots")
 
 libraryDependencies ++= Seq(
