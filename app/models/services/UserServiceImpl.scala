@@ -60,7 +60,9 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
           lastName = profile.lastName,
           fullName = profile.fullName,
           email = profile.email,
-          avatarURL = profile.avatarURL
+          avatarURL = profile.avatarURL,
+          userCertificates = None /*TODO: amandeep, we won't signup a user this way, we'll only allow logins for
+           the users who come pre fed in our database.*/
         ))
     }
   }

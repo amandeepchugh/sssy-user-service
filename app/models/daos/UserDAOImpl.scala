@@ -1,12 +1,14 @@
 package models.daos
 
 import java.util.UUID
+
 import com.mohiva.play.silhouette.api.LoginInfo
-import models.User
+import models.{User, UserCertificate}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import slick.dbio.DBIOAction
 import javax.inject.Inject
 import play.api.db.slick.DatabaseConfigProvider
+
 import scala.concurrent.Future
 
 /**
@@ -23,17 +25,36 @@ class UserDAOImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
    * @return The found user or None if no user for the given login info could be found.
    */
   def find(loginInfo: LoginInfo) = {
-    val userQuery = for {
-      dbLoginInfo <- loginInfoQuery(loginInfo)
-      dbUserLoginInfo <- slickUserLoginInfos.filter(_.loginInfoId === dbLoginInfo.id)
-      dbUser <- slickUsers.filter(_.id === dbUserLoginInfo.userID)
-    } yield dbUser
-    db.run(userQuery.result.headOption).map { dbUserOption =>
-      dbUserOption.map { user =>
-        User(UUID.fromString(user.userID), loginInfo, user.firstName, user.lastName, user.fullName, user.email, user.avatarURL)
+    val userQueryAction = for {
+      dbLoginInfoOpt <- loginInfoQuery(loginInfo).result.headOption
+      dbUserLoginInfoOpt <- dbLoginInfoOpt match {
+        case Some(dbLoginInfo) => slickUserLoginInfos.filter(_.loginInfoId === dbLoginInfo.id).result.headOption
+        case None => DBIO.successful(None)
+      }
+      dbUserOpt <- dbUserLoginInfoOpt match {
+        case Some(dbUserLoginInfo) => slickUsers.filter(_.id === dbUserLoginInfo.userID).result.headOption
+        case None => DBIO.successful(None)
+      }
+      dbUserCertificates <- dbUserOpt match {
+        case Some(dbUser) => slickUserCertificates.filter(_.userID === dbUser.userID).result
+        case None => DBIO.successful(Seq())
+      }
+    } yield {
+      val userCertificatesOpt = dbUserCertificates match {
+        case Seq() => None
+        case dbCertificates => Some(dbCertificates.map { dbC =>
+          UserCertificate(dbC.certificateNumber, dbC.validFrom, dbC.validity)
+        }.toList)
+      }
+      dbUserOpt match {
+        case Some(dbUser) => Some(User(UUID.fromString(dbUser.userID), loginInfo, dbUser.firstName, dbUser.lastName,
+          dbUser.fullName, dbUser.email, dbUser.avatarURL, userCertificates = userCertificatesOpt))
+        case None => None
       }
     }
+    db.run(userQueryAction)
   }
+
 
   /**
    * Finds a user by its user ID.
@@ -57,7 +78,9 @@ class UserDAOImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
             user.lastName,
             user.fullName,
             user.email,
-            user.avatarURL)
+            user.avatarURL,
+            userCertificates = None /*TODO: amandeep fetch certificates from db*/
+          )
       }
     }
   }

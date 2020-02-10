@@ -1,3 +1,5 @@
+@import java.util.concurrent.TimeUnit
+@import org.joda.time.format.DateTimeFormat
 @(user: models.User)(implicit messages: Messages)
 
 @main(Messages("home.title"), Some(user)) {
@@ -24,6 +26,34 @@
                 <div class="row">
                     <p class="col-md-6"><strong>@Messages("email"):</strong></p><p class="col-md-6">@user.email.getOrElse("None")</p>
                 </div>
+                @if(user.userCertificates.isDefined) {
+                    <div class="row">
+                        <div class="col-md-6"><strong>Certificate Details:</strong></div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-3"><b>SNo</b></div>
+                                <div class="col-md-3"><b>Number</b></div>
+                                <div class="col-md-3"><b>Date of Issue</b></div>
+                                <div class="col-md-3"><b>Validity (In Days)</b></div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    @for((certificate, i) <-  user.userCertificates.get.view.zipWithIndex) {
+                        <div class="row">
+                            <div class="col-md-6"></div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-3">@(i+1)</div>
+                                    <div class="col-md-3" style="word-wrap:break-word;">@certificate.certificateNumber.toString</div>
+                                    <div class="col-md-3">@DateTimeFormat.forPattern("d/M/yyyy").print(certificate.validFrom)</div>
+                                    <div class="col-md-3">@certificate.validity.toUnit(TimeUnit.DAYS)</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
             </div>
         </div>
     </div>

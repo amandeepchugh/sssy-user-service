@@ -1,11 +1,16 @@
 package models.daos
 
 import com.mohiva.play.silhouette.api.LoginInfo
+import org.joda.time.DateTime
 import slick.driver.JdbcProfile
+import slick.lifted.ProvenShape
 import slick.lifted.ProvenShape.proveShapeOf
+import utils.dbMappings.HasDurationToMilliSecondsDbMapper
 
-trait DBTableDefinitions {
-  
+import scala.concurrent.duration.Duration
+
+trait DBTableDefinitions extends HasDurationToMilliSecondsDbMapper {
+
   protected val driver: JdbcProfile
   import driver.api._
 
@@ -26,6 +31,25 @@ trait DBTableDefinitions {
     def email = column[Option[String]]("email")
     def avatarURL = column[Option[String]]("avatarURL")
     def * = (id, firstName, lastName, fullName, email, avatarURL) <> (DBUser.tupled, DBUser.unapply)
+  }
+
+  case class DBUserCertificate (
+                               id: String,
+                               userID: String,
+                               certificateNumber: String,
+                               validFrom: DateTime,
+                               validity: Duration
+                               )
+  class UserCertificates(tag: Tag) extends Table[DBUserCertificate](tag, "usercertificate") {
+    import com.github.tototoshi.slick.JdbcJodaSupport._
+    def id = column[String]("id", O.PrimaryKey, O.AutoInc)
+    def userID = column[String]("userID")
+    def certificateNumber = column[String]("certificateNumber")
+    def validFrom = column[DateTime]("validFrom")
+    def validity = column[Duration]("validity_in_milliseconds")
+
+    def * =
+      (id, userID, certificateNumber, validFrom, validity) <> (DBUserCertificate.tupled, DBUserCertificate.unapply)
   }
 
   case class DBLoginInfo (
@@ -127,6 +151,7 @@ trait DBTableDefinitions {
 
   // table query definitions
   val slickUsers = TableQuery[Users]
+  val slickUserCertificates = TableQuery[UserCertificates]
   val slickLoginInfos = TableQuery[LoginInfos]
   val slickUserLoginInfos = TableQuery[UserLoginInfos]
   val slickPasswordInfos = TableQuery[PasswordInfos]
