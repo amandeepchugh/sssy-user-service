@@ -108,7 +108,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     xingProvider: XingProvider,
     yahooProvider: YahooProvider): SocialProviderRegistry = {
 
-    SocialProviderRegistry(Seq(
+    /*SocialProviderRegistry(Seq(
       googleProvider,
       facebookProvider,
       twitterProvider,
@@ -116,7 +116,8 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
       xingProvider,
       yahooProvider,
       clefProvider
-    ))
+    ))*/
+    SocialProviderRegistry(Seq.empty)
   }
 
   /**
