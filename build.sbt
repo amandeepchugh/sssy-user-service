@@ -24,6 +24,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-slick-evolutions" % "1.0.1",
   "com.github.tototoshi" %% "slick-joda-mapper" % "2.0.0",
   "com.h2database" % "h2" % "1.4.188",
+  "com.typesafe.play" %% "play-mailer" % "3.0.1",
   cache,
   evolutions,
   filters

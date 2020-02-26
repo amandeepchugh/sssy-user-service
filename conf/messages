@@ -8,6 +8,9 @@ could.not.authenticate = Could not authenticate with social provider! Please try
 home.title = Silhouette - Home
 sign.up.title = Silhouette - Sign Up
 sign.in.title = Silhouette - Sign In
+forgot.password.title = Silhouette - Forgot Password
+reset.password.title = Silhouette - Reset Password
+not.found.title = Silhouette - Not Found
 
 toggle.navigation = Toggle navigation
 welcome.signed.in = Welcome, you are now signed in!
@@ -29,6 +32,8 @@ sign.in.now = Sign in now
 sign.up.now = Sign up now
 already.a.member = Already a member?
 not.a.member = Not a member?
+signin.forgot.question=Have you forgotten your password?
+signin.forgot=Reset it now
 
 remember.me = Remember my login on this computer
 or.use.social = Or use your existing account on one of the following services to sign in:
@@ -43,3 +48,35 @@ yahoo = Yahoo
 
 #profile page
 certificate.renew = Renew
+
+#ForgotPassword
+auth.user.notexists=There is no user with this email
+auth.passwords.notequal=The passwords must be equal
+
+forgot.title=Have you forgot your password?
+forgot.sent=We''ve just sent an email to {0} with the instructions to reset your password
+forgot.reset.title=Reset your password
+forgot.reseted=Your password has been reseted
+
+################################################################################################
+# ERRORS
+error.notfound.title=Handler Not Found
+error.notfound.text=For request ''{0}''
+
+################################################################################################
+# MAILS
+
+mail.forgotpwd.subject=Reset your password
+mail.forgotpwd.prelink=Someone (hopefully you) has requested a password reset for your SSSY-Teacher's account. Follow the link below to set a new password:
+mail.forgotpwd.postlink=Note that this link will expire in 24 hours. If you don''t wish to reset your password, disregard this email and no action will be taken.
+
+mail.sign=Support | SSSY
+
+
+################################################################################################
+# COMMON
+field.email=Email
+submit=Submit
+field.password=Password
+field.password.repeat=Repeat password
+go.home=Home Page
